@@ -32,3 +32,7 @@ Abra o seu navegador de preferência e cole na barra de endereços o endereço a
 
     http://localhost:3000/?number=-123456
 altere o valor do parâmetro `number` para o número que deseja traduzir
+
+## Para testar
+Para testar execute o comando abaixo:
+    yarn test
