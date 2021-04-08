@@ -1,5 +1,3 @@
-const lib = require('numero-por-extenso')
-
 function identificarUnidade(numero) {
    // console.log("A unidade é: ", numero)
     switch (numero) {
@@ -87,7 +85,6 @@ function identificarMilhar(numero) {
    
 }
 
-// Buscar uma maneira de evitar essa gambiarra
 function identificarDezenaDez(numero) {
     switch (numero) {
         case "1":
@@ -114,14 +111,16 @@ function identificarDezenaDez(numero) {
 }
 exports.identificar = function(numero) {
     // Essa é nossa lógica própria
-  
-    // Corrigir para ir do mil, o milhar chama centena, centena chama dezena , dezenha chamada unidade
-    
 
-
-    const arrayDigitos = (""+numero).split("")
-    const arrayDigitosLength = arrayDigitos.length
     let porExtenso = ""
+    const arrayDigitos = (""+numero).split("")
+    if ( arrayDigitos[0] == "-" ){
+         porExtenso = "menos"
+         arrayDigitos.shift()
+    }
+
+    const arrayDigitosLength = arrayDigitos.length
+    
     let dezenaDez = false
     for (let i = 0; i < arrayDigitosLength ; i++) {
         
@@ -129,7 +128,7 @@ exports.identificar = function(numero) {
         switch (casaDecimal) {
             case 6:
                // console.log("Centena de milhar: ", arrayDigitos[i])
-                porExtenso=identificarCentena(arrayDigitos[i])
+                porExtenso= `${porExtenso} ${identificarCentena(arrayDigitos[i])}`
                 break
             case 5:
               //  console.log("Dezena de milhar: ", arrayDigitos[i])
@@ -150,12 +149,12 @@ exports.identificar = function(numero) {
                 let dezena = ""
                 if (arrayDigitos[i] == "1" ) {
                     dezena = identificarDezenaDez(arrayDigitos[i+1])
-                    porExtenso = porExtenso.length >= 1  && dezena.length > 0  ? `${porExtenso} e`: `${porExtenso}`
+                    porExtenso = porExtenso.length >= 1  && dezena.length > 0 && porExtenso !== "menos" ? `${porExtenso} e`: `${porExtenso}`
                     porExtenso = `${porExtenso}${dezena.length > 0 ? " ":""}${dezena}`
                     dezenaDez = true
                 } else {
                     dezena = identificarDezena(arrayDigitos[i])
-                    porExtenso = porExtenso.length >= 1  && dezena.length > 0  ? `${porExtenso} e`: `${porExtenso}`
+                    porExtenso = porExtenso.length >= 1  && dezena.length > 0 && porExtenso !== "menos"  ? `${porExtenso} e`: `${porExtenso}`
                     porExtenso = `${porExtenso}${dezena.length > 0 ? " ":""}${dezena}`
                     dezenaDez = false
                 }
@@ -164,51 +163,13 @@ exports.identificar = function(numero) {
                 if ( !dezenaDez ){
                     //console.log("Unidade: ", arrayDigitos[i])
                     const unidade = identificarUnidade(arrayDigitos[i])
-                    porExtenso = porExtenso.length >= 1 && unidade.length > 0  ? `${porExtenso} e`: `${porExtenso}`
+                    porExtenso = porExtenso.length >= 1 && unidade.length > 0 && porExtenso !== "menos" ? `${porExtenso} e`: `${porExtenso}`
                     porExtenso = `${porExtenso} ${unidade}`
                 }
                 break         
         }
     }
-    
-   /*const unidade = numero % 10
-    const centena = Math.floor(numero / 100)
-    const milhar = Math.floor(numero / 1000)
-    if(centena == 0 && dezena == 1 ){
-        gambiarra(unidade)
-    } else {
-      //  return `${identificarMilhar(milhar)} ${identificarCentena(centena)} ${identificarDezena(dezena)} ${identificarUnidade(unidade)}`
-      const resultado = `${identificarCentena(centena)} ${identificarDezena(dezena)} ${identificarUnidade(unidade)}`
-      if (resultado.endsWith("dez um")
-       || resultado.endsWith("dez dois")
-       || resultado.endsWith("dez tres")
-       || resultado.endsWith("dez quatro")
-       || resultado.endsWith("dez cinco")
-       || resultado.endsWith("dez seis")
-       || resultado.endsWith("dez sete")
-       || resultado.endsWith("dez oito")
-       || resultado.endsWith("dez nove") ) {
-          return  `${identificarCentena(centena)} ${gambiarra(unidade)} `
-      } else {
-          return resultado
-      }
-    
-    }*/
+    porExtenso = porExtenso.trim()
+    porExtenso = porExtenso.endsWith("cento") ? porExtenso.replace("cento", "cem") : porExtenso
     return porExtenso
-    
-    // Esta é a lib que faz nosso objetivo, descomente para usar
-    // return lib.porExtenso(numero)
-
 }
-
-
-/**
- * 1 um
- * 2 dois
- * 10 dez
- * 100 cem
- * 200 duzentos
- * 1000 mil
- * 2000 dois mil
- * -1 menos 1
- **/
