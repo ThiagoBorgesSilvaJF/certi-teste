@@ -111,7 +111,9 @@ function identificarDezenaDez(numero) {
 }
 exports.identificar = function(numero) {
     // Essa é nossa lógica própria
-
+    if (numero < -999999 || numero > 999999){
+        return false
+    }
     let porExtenso = ""
     const arrayDigitos = (""+numero).split("")
     if ( arrayDigitos[0] == "-" ){
